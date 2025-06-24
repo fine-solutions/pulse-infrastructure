@@ -91,9 +91,9 @@
   ```bash
   # RedHat based
   sudo dnf -y update
-  sudo dnf install -y dnf-utils zip unzip curl wget git rsync mc emacs tmux nano vim
+  sudo dnf install -y dnf-utils zip unzip curl wget git rsync mc emacs tmux nano vim wget
 
   # Debian based
   sudo apt update
-  sudo apt install -y zip unzip curl wget git rsync mc emacs tmux nano vim
+  sudo apt install -y zip unzip curl wget git rsync mc emacs tmux nano vim wget
   ```
