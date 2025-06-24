@@ -21,6 +21,18 @@
   usermod -a -G sudo user      # Добавление пользователя в группу админов
   ```
 
+- Убедиться, что настройки SSHD соответствуют следующему шагу:
+
+  ```bash
+  # Редактирование конфигурации sshd
+  sudo vi /etc/ssh/sshd_config
+
+  # Установить следующие значения:
+  # PasswordAuthentication yes
+  # KbdInteractiveAuthentication yes
+  # UsePAM yes
+  ```
+
 - Добавить публичный ключ пользователя на сервер (на примере `user`):
 
   ```bash
@@ -33,14 +45,19 @@
   # Копирование ключа на сервер
   ssh-copy-id user@server_ip_address
   ```
+
 - Настроить доступ через SSH только по ключу (на примере `user`):
 
   ```bash
   # Редактирование конфигурации sshd
   sudo vi /etc/ssh/sshd_config
 
-  # Установить значение PasswordAuthentication no
-  # Установить значение PermitRootLogin no
+  # Установить следующие значения:
+  # PermitRootLogin no
+  # PasswordAuthentication no
+  # UsePAM no
+  # ClientAliveInterval 3600
+  # ClientAliveCountMax 10
 
   # Перезагрузка службы
   sudo systemctl restart sshd
