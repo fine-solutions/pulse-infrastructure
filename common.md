@@ -24,8 +24,7 @@
 - Убедиться, что настройки SSHD соответствуют следующему шагу:
 
   ```bash
-  # Редактирование конфигурации sshd
-  sudo vi /etc/ssh/sshd_config
+  sudo vi /etc/ssh/sshd_config  # Редактирование конфигурации sshd
 
   # Установить следующие значения:
   # PasswordAuthentication yes
@@ -36,21 +35,15 @@
 - Добавить публичный ключ пользователя на сервер (на примере `user`):
 
   ```bash
-  # Создание ключа на новых системах
-  ssh-keygen -t ed25519
-
-  # Создание ключа на старых системах
-  ssh-keygen -t rsa -b 4096
-
-  # Копирование ключа на сервер
-  ssh-copy-id user@server_ip_address
+  ssh-keygen -t ed25519               # Создание ключа на новых системах
+  ssh-keygen -t rsa -b 4096           # Создание ключа на старых системах
+  ssh-copy-id user@server_ip_address  # Копирование ключа на сервер
   ```
 
 - Настроить доступ через SSH только по ключу (на примере `user`):
 
   ```bash
-  # Редактирование конфигурации sshd
-  sudo vi /etc/ssh/sshd_config
+  sudo vi /etc/ssh/sshd_config  # Редактирование конфигурации sshd
 
   # Установить следующие значения:
   # PermitRootLogin no
@@ -58,15 +51,11 @@
   # UsePAM no
   # ClientAliveInterval 3600
   # ClientAliveCountMax 10
+  
+  sudo systemctl restart sshd  # Перезагрузка службы
 
-  # Перезагрузка службы
-  sudo systemctl restart sshd
-
-  # В отдельном окне терминала зайти под пользователем user для проверки
-  ssh user@server_ip_address
-
-  # Выйти командой exit и проверить отсутствие доступа для root
-  ssh root@server_ip_address
+  ssh user@server_ip_address   # В отдельном окне терминала зайти под пользователем user для проверки
+  ssh root@server_ip_address   # Выйти командой exit и проверить отсутствие доступа для root
 
   # Если что-то пошло не так, можно проверить файлы и права для них на сервере
   cat /home/user/.ssh/authorized_keys
@@ -75,38 +64,26 @@
   restorecon -r -vv /home/user/.ssh/authorized_keys
   ```
 
-- Добавить пользователя с правами на развёртывание сайтов и сгенерировать пару ключей для авторизации:
+- Добавить пользователя с правами на развёртывание приложений и сгенерировать пару ключей для авторизации:
 
   ```bash
-  # Создание пользователя
-  useradd deploy
+  # RedHat based
+  useradd deploy                  # Создание пользователя
 
-  # Проверка наличия пользователя
-  grep deploy /etc/passwd
-  
-  # Зайти под пользователем
-  su deploy
+  # Debian based
+  useradd -m -s /bin/bash deploy  # Создание пользователя
 
-  # Сгенерировать пару ключей
-  ssh-keygen -t rsa -b 4096
-  
-  # Выйти
-  exit
-  
-  # Зайти под администратором
-  sudo su
-
-  # Перейти в домашний каталог
-  cd /home/deploy/.ssh
-
-  # Добавить в ключи авторизации
-  cp id_rsa.pub authorized_keys
-
-  # Выставить права
-  chmod 600 /home/deploy/.ssh/authorized_keys
-  
-  # Выйти
-  exit
+  # Common comands
+  grep deploy /etc/passwd                      # Проверка наличия пользователя
+  su deploy                                    # Зайти под пользователем
+  ssh-keygen -t rsa -b 4096                    # Сгенерировать пару ключей
+  exit                                         # Выйти
+  sudo su                                      # Зайти под администратором
+  cd /home/deploy/.ssh                         # Перейти в домашний каталог
+  cp id_rsa.pub authorized_keys                # Добавить в ключи авторизации
+  chown deploy:deploy authorized_keys          # Выставить владельца
+  chmod 600 /home/deploy/.ssh/authorized_keys  # Выставить права
+  exit                                         # Выйти
   ```
 
 - Обновить пакеты и установить самое необходимое:
@@ -118,5 +95,5 @@
 
   # Debian based
   sudo apt update
-  sudo apt install -y dnf-utils zip unzip curl wget git rsync mc emacs tmux nano vim
+  sudo apt install -y zip unzip curl wget git rsync mc emacs tmux nano vim
   ```
